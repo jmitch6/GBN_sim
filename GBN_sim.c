@@ -156,7 +156,7 @@ void A_input(packet)
   }
   if (packet.acknum != A.next_buffer)
   {
-      printf("    A_input not correct sequence number. Expected %d, got %d", A.next_buffer, packet.acknum);
+      printf("    A_input not correct sequence number. Expected %d, got %d\n", A.next_buffer, packet.acknum);
       return;
   }
   //add the new packet
