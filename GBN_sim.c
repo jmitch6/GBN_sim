@@ -155,10 +155,6 @@ void A_input(packet)
   {
       printf("    A_input checksum passed, ACK recieved for %d\n", packet.acknum);
   }
-  if (packet.acknum != A.lastACK)
-  {
-      printf("    ")
-  }
   //add the new packet
   A.lastACK = packet.acknum +1;
   //check if no more packets in buffer
