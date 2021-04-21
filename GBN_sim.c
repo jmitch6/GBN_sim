@@ -154,9 +154,9 @@ void A_input(packet)
   {
       printf("    A_input checksum passed, ACK recieved for %d\n", packet.acknum);
   }
-  if (packet.acknum != A.next_buffer)
+  if (packet.acknum != A.next_seq)
   {
-      printf("    A_input not correct sequence number. Expected %d, got %d\n", A.next_buffer, packet.acknum);
+      printf("    A_input not correct sequence number. Expected %d, got %d\n", A.next_seq, packet.acknum);
       return;
   }
   //add the new packet
