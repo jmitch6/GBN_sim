@@ -62,6 +62,7 @@ struct sender{
 
 struct receiver{
   int next_seq;
+  struct pkt last_packet;
 };
 
 struct sender A;
@@ -154,6 +155,10 @@ void A_input(packet)
   {
       printf("    A_input checksum passed, ACK recieved for %d\n", packet.acknum);
   }
+  if (packet.acknum != A.lastACK)
+  {
+      printf("    ")
+  }
   //add the new packet
   A.lastACK = packet.acknum +1;
   //check if no more packets in buffer
@@ -215,9 +220,10 @@ void B_input(packet)
     return;
   }
   //check if it is the correct sequence number
-  if (packet.seqnum > B.next_seq)
+  if (packet.seqnum != B.next_seq)
   {
     printf("    B_input checksum passed sequence number was %d not expected %d \n",packet.seqnum,B.next_seq);
+    tolayer3(B.last_packet);
     return;
   }
   else
@@ -232,6 +238,7 @@ void B_input(packet)
   memset(packet_back.payload,0,20);
   packet_back.seqnum = -1;
   packet_back.checksum = getChecksum(&packet_back);
+  B.last_packet = packet_back;
   printf("    Sending ACK for %d\n", packet.seqnum);
   tolayer3(1,packet_back);
   B.next_seq++;
