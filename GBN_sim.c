@@ -230,8 +230,8 @@ void B_input(packet)
   struct pkt packet_back;
   packet_back.acknum = B.next_seq;
   memset(packet_back.payload,0,20);
-  packet_back.checksum = getChecksum(&packet_back);
   packet_back.seqnum = -1;
+  packet_back.checksum = getChecksum(&packet_back);
   tolayer3(1,packet_back);
   B.next_seq++;
 }
