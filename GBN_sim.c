@@ -147,7 +147,7 @@ void A_input(packet)
   //check checksum
   if (packet.checksum != getChecksum(&packet))
   {
-      printf("    A_input checksum failed, disregard corrupted packet for %d\n", packet.acknum);
+      printf("    A_input checksum failed, disregard ACK packet %d\n", packet.acknum);
       return;
   }
   else
@@ -211,7 +211,7 @@ void B_input(packet)
   }
   else
   {
-    printf("    B_input checksum failed, disregard packet %d \n",packet.seqnum);
+    printf("    B_input checksum failed, corrupted packet %d \n",packet.seqnum);
     return;
   }
   //check if it is the correct sequence number
