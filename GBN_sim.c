@@ -112,7 +112,9 @@ void send(void)
 
 int getChecksum(struct pkt *packet)
 {
-  int checksum = packet->seqnum + packet->acknum;
+    int checksum = 0;
+    checksum += packet->seqnum;
+    checksum += packet->acknum;
   int i;
   for (i = 0 ; i < 20 ; i++)
   {
