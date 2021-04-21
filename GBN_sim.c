@@ -155,8 +155,13 @@ void A_input(packet)
   {
       printf("    A_input checksum passed, ACK recieved for %d\n", packet.acknum);
   }
+  if (packet.acknum != A.lastACK)
+  {
+      printf("    Wrong ACK for seq # %d, expected %d", packet.acknum,A.lastACK);
+      return;
+  }
   //add the new packet
-  A.lastACK = packet.acknum +1;
+  A.lastACK = packet.acknum;
   //check if no more packets in buffer
   if (A.lastACK == A.next_seq)
   {
