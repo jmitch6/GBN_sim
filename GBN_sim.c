@@ -153,7 +153,11 @@ void A_input(packet)
   else
   {
       printf("    A_input checksum passed, ACK recieved for %d\n", packet.acknum);
-
+  }
+  if (packet.acknum != A.next_buffer)
+  {
+      printf("    A_input not correct sequence number. Expected %d, got %d", A.next_buffer, packet.acknum);
+      return;
   }
   //add the new packet
   A.lastACK = packet.acknum + 1;
