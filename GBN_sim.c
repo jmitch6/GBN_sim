@@ -99,6 +99,7 @@ void send(void)
   while(A.next_seq < A.next_buffer && A.next_seq < A.lastACK + A.window)
   {
     struct pkt *currpacket = &A.Buffer.array[A.next_seq];
+    printf("sending packet #%d \n",A.next_seq);
     tolayer3(0,*currpacket);
     //start a timer if its the first
     if (A.lastACK == A.next_seq)
