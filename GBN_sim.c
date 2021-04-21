@@ -99,7 +99,7 @@ void send(void)
   while(A.next_seq < A.next_buffer && A.next_seq < A.lastACK + A.window)
   {
     struct pkt *currpacket = &A.Buffer.array[A.next_seq];
-    printf("sending packet #%d \n",A.next_seq);
+    printf("    sending packet #%d \n",A.next_seq);
     tolayer3(0,*currpacket);
     //start a timer if its the first
     if (A.lastACK == A.next_seq)
@@ -147,12 +147,12 @@ void A_input(packet)
   //check checksum
   if (packet.checksum != getChecksum(&packet))
   {
-      printf("A_input checksum failed, disregard corrupted packet for %d\n", packet.acknum);
+      printf("  A_input checksum failed, disregard corrupted packet for %d\n", packet.acknum);
       return;
   }
   else
   {
-      printf("A_input checksum passed, ACK recieved for %d\n", packet.acknum);
+      printf("  A_input checksum passed, ACK recieved for %d\n", packet.acknum);
 
   }
   //add the new packet
@@ -178,7 +178,7 @@ void A_timerinterrupt()
   {
     struct pkt packet = A.Buffer.array[i];
     tolayer3(0,packet);
-    printf("A timeout. Resending packet with SEQ#%d\n",packet.seqnum);
+    printf("    A timeout. Resending packet with SEQ#%d\n",packet.seqnum);
   }
   //start a new timer
   starttimer(0,A.estimatedRTT);
@@ -207,22 +207,22 @@ void B_input(packet)
   //check for corrupted packet
   if (packet.checksum == getChecksum(&packet))
   {
-    printf("B_input checksum passed, recieved packet %d \n",packet.seqnum);
+    printf("    B_input checksum passed, recieved packet %d \n",packet.seqnum);
   }
   else
   {
-    printf("B_input checksum failed, disregard packet %d \n",packet.seqnum);
+    printf("    B_input checksum failed, disregard packet %d \n",packet.seqnum);
     return;
   }
   //check if it is the correct sequence number
   if (packet.seqnum != B.next_seq)
   {
-    printf("B_input checksum passed sequence number was %d not expected %d \n",packet.seqnum,B.next_seq);
+    printf("    B_input checksum passed sequence number was %d not expected %d \n",packet.seqnum,B.next_seq);
     return;
   }
   else
   {
-    printf("B_input checksum passed and sequence number as expected \n");
+    printf("    B_input checksum passed and sequence number as expected \n");
   }
   //send packet to layer 5
   tolayer5(1,packet.payload);
