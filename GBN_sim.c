@@ -233,7 +233,7 @@ void B_input(packet)
   memset(packet_back.payload,0,20);
   packet_back.seqnum = -1;
   packet_back.checksum = getChecksum(&packet_back);
-  printf("Sending ACK for %d", packet_back.seqnum);
+  printf("    Sending ACK for %d", packet.seqnum);
   tolayer3(1,packet_back);
   B.next_seq++;
 }
