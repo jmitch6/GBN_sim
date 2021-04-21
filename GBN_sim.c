@@ -177,8 +177,9 @@ void A_timerinterrupt()
   for (i=A.lastACK ; i < A.next_seq ; i++)
   {
     struct pkt packet = A.Buffer.array[i];
+    printf("    A timeout. Resending packet with SEQ#%d\n", packet.seqnum);
     tolayer3(0,packet);
-    printf("    A timeout. Resending packet with SEQ#%d\n",packet.seqnum);
+
   }
   //start a new timer
   starttimer(0,A.estimatedRTT);
@@ -232,6 +233,7 @@ void B_input(packet)
   memset(packet_back.payload,0,20);
   packet_back.seqnum = -1;
   packet_back.checksum = getChecksum(&packet_back);
+  printf("Sending ACK for %d", packet_back.seqnum);
   tolayer3(1,packet_back);
   B.next_seq++;
 }
