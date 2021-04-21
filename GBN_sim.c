@@ -145,14 +145,15 @@ void A_input(packet)
   struct pkt packet;
 {
   //check checksum
-  if (packet.checksum == getChecksum(&packet))
+  if (packet.checksum != getChecksum(&packet))
   {
-    printf("A_input checksum passed, ACK recieved for %d\n",packet.acknum);
+      printf("A_input checksum failed, disregard corrupted packet for %d\n", packet.acknum);
+      return;
   }
   else
   {
-    printf("A_input checksum failed, disregard corrupted packet for %d\n",packet.acknum);
-    return;
+      printf("A_input checksum passed, ACK recieved for %d\n", packet.acknum);
+
   }
   //add the new packet
   A.lastACK = packet.acknum + 1;
