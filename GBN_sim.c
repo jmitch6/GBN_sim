@@ -42,40 +42,41 @@ void generate_next_arrival();
 void insertevent();
 
 /********* STUDENTS WRITE THE NEXT SEVEN ROUTINES *********/
-struct sender A;
-struct receiver B;
 
-typedef struct{
+
+struct Darray{
   struct pkt *array;
   int currentsize;
   int maxsize;
-} Darray;
+};
 
-typedef struct{
+struct sender{
   /*Packet buffer for sender*/
-  Darray Buffer;
+  struct Darray Buffer;
   int next_buffer;
   int next_seq;
   float estimatedRTT;
   int lastACK;
   int window;
-} sender;
+};
 
-typedef struct{
+struct receiver{
   int next_seq;
+};
 
-} receiver;
+struct sender A;
+struct receiver B;
 
 struct Darray initBuffer()
 {
-  Darray Buffer;
-  Buffer->array = malloc(50 * sizeof(struct pkt));
-  Buffer->currentsize = 0;
-  Buffer->maxsize = 50;
+  struct Darray Buffer;
+  Buffer.array = malloc(50 * sizeof(struct pkt));
+  Buffer.currentsize = 0;
+  Buffer.maxsize = 50;
   return Buffer;
 }
 
-void insertBuffer(Darray *Buffer, struct pkt packet)
+void insertBuffer(struct Darray *Buffer, struct pkt packet)
 {
   if (Buffer->currentsize == Buffer->maxsize)
   {
@@ -95,9 +96,9 @@ int expectedseqnum = 0;
 
 void send(void)
 {
-  while(A.next_seq < A.next_buffer ** A.next_seq < A.lastACK + A.window)
+  while(A.next_seq < A.next_buffer && A.next_seq < A.lastACK + A.window)
   {
-    struct pkt *currpacket = A.buffer->array[next_seq];
+    struct pkt *currpacket = &A.Buffer.array[A.next_seq];
     tolayer3(0,*currpacket);
     //start a timer if its the first
     if (A.lastACK == A.next_seq)
@@ -108,10 +109,10 @@ void send(void)
   }
 }
 
-int getChecksum(pkt *packet)
+int getChecksum(struct pkt *packet)
 {
   int checksum = packet->seqnum + packet->acknum;
-  for (int i = 0 ; i < packet->payload.length ; i++)
+  for (int i = 0 ; i < 20 ; i++)
   {
     checksum += packet->payload[i];
   }
@@ -122,11 +123,11 @@ void A_output(message)
   struct msg message;
 {
   struct pkt packet;
-  packet.payload = message;
+  memmove(packet.payload,message.data,20);
   packet.seqnum = A.next_buffer;
   packet.checksum = getChecksum(&packet);
   A.next_buffer++;
-  insertBuffer(A.Buffer,packet);
+  insertBuffer(&A.Buffer,packet);
   send();
 }
 
@@ -159,7 +160,7 @@ void A_input(packet)
   }
   else
   {
-    starttimer(0,A.extimatedRTT);
+    starttimer(0,A.estimatedRTT);
   }
 }
 
@@ -169,7 +170,7 @@ void A_timerinterrupt()
   //resend all packets that havent gotten ACK
   for (int i = A.lastACK ; i < A.next_seq ; i++)
   {
-    struct pkt packet = A.Buffer->array[i];
+    struct pkt packet = A.Buffer.array[i];
     tolayer3(0,packet);
     printf("A timeout. Resending packet with SEQ#%d\n",packet.seqnum);
   }
@@ -182,11 +183,12 @@ void A_timerinterrupt()
 void A_init()
 {
   struct Darray A_BUFFER = initBuffer();
-  A->Buffer = A_BUFFER;
-  A->next_packet = 0;
-  A->estimatedRTT = 15.0;
-  A->lastACK = 0;
-  A->window = 8;
+  A.Buffer = A_BUFFER;
+  A.next_seq = 0;
+  A.next_buffer = 0;
+  A.estimatedRTT = 15.0;
+  A.lastACK = 0;
+  A.window = 8;
 }
 
 
@@ -222,7 +224,7 @@ void B_input(packet)
   struct pkt packet_back;
   packet_back.acknum = B.next_seq;
   packet_back.checksum = getChecksum(&packet_back);
-  packet_back.payload = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  memset(packet_back.payload,0,20);
   packet_back.seqnum = -1;
   tolayer3(1,packet_back);
   B.next_seq++;
@@ -238,7 +240,7 @@ void B_timerinterrupt()
 /* entity B routines are called. You can use it to do any initialization */
 void B_init()
 {
-  B->next_seq = 0;
+  B.next_seq = 0;
 }
 
 
