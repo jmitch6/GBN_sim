@@ -112,7 +112,8 @@ void send(void)
 int getChecksum(struct pkt *packet)
 {
   int checksum = packet->seqnum + packet->acknum;
-  for (int i = 0 ; i < 20 ; i++)
+  int i;
+  for (i = 0 ; i < 20 ; i++)
   {
     checksum += packet->payload[i];
   }
@@ -168,7 +169,8 @@ void A_input(packet)
 void A_timerinterrupt()
 {
   //resend all packets that havent gotten ACK
-  for (int i = A.lastACK ; i < A.next_seq ; i++)
+  int i;
+  for (i=A.lastACK ; i < A.next_seq ; i++)
   {
     struct pkt packet = A.Buffer.array[i];
     tolayer3(0,packet);
