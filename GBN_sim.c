@@ -226,8 +226,8 @@ void B_input(packet)
   //make ack packet and send back to A
   struct pkt packet_back;
   packet_back.acknum = B.next_seq;
-  packet_back.checksum = getChecksum(&packet_back);
   memset(packet_back.payload,0,20);
+  packet_back.checksum = getChecksum(&packet_back);
   packet_back.seqnum = -1;
   tolayer3(1,packet_back);
   B.next_seq++;
