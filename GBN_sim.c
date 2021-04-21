@@ -218,10 +218,11 @@ void B_input(packet)
   else
   {
     printf("    B_input checksum failed, corrupted packet %d \n",packet.seqnum);
+    tolayer3(B.last_packet);
     return;
   }
   //check if it is the correct sequence number
-  if (packet.seqnum > B.next_seq)
+  if (packet.seqnum != B.next_seq)
   {
     printf("    B_input checksum passed sequence number was %d not expected %d \n",packet.seqnum,B.next_seq);
     tolayer3(B.last_packet);
